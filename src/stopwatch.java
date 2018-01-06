@@ -2,6 +2,7 @@
 import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -19,7 +20,11 @@ public class stopwatch extends javax.swing.JFrame {
      * Creates new form stopwatch
      */
     
+          
+    DefaultListModel model=new DefaultListModel();
+    int k=1;//to count the laps
     Thread ob;
+    boolean flag=false;
     public stopwatch() {
         initComponents();
     }
@@ -36,11 +41,11 @@ public class stopwatch extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         timer = new javax.swing.JLabel();
         bReset = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        bPause = new javax.swing.JButton();
+        bLap = new javax.swing.JButton();
         bStart = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        list = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,12 +61,17 @@ public class stopwatch extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("PAUSE");
-
-        jButton3.setText("LAP");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        bPause.setText("PAUSE");
+        bPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                bPauseActionPerformed(evt);
+            }
+        });
+
+        bLap.setText("LAP");
+        bLap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bLapActionPerformed(evt);
             }
         });
 
@@ -72,12 +82,9 @@ public class stopwatch extends javax.swing.JFrame {
             }
         });
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        list.setModel(model);
+        list.setToolTipText("");
+        jScrollPane1.setViewportView(list);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -89,9 +96,9 @@ public class stopwatch extends javax.swing.JFrame {
                         .addGap(58, 58, 58)
                         .addComponent(bReset)
                         .addGap(79, 79, 79)
-                        .addComponent(jButton3)
+                        .addComponent(bLap)
                         .addGap(65, 65, 65)
-                        .addComponent(jButton2))
+                        .addComponent(bPause))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(bStart, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -109,8 +116,8 @@ public class stopwatch extends javax.swing.JFrame {
                 .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bReset)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(bPause)
+                    .addComponent(bLap))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(bStart)
                 .addGap(23, 23, 23))
@@ -131,14 +138,24 @@ public class stopwatch extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void bLapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bLapActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+       
+            // TODO add your handling code here:    
+            model.addElement(k+". "+timer.getText());
+            k++;
+        
+    }//GEN-LAST:event_bLapActionPerformed
 
     private void bStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bStartActionPerformed
         // TODO add your handling code here:
        
-       int k=0;
+       if(flag)
+        {
+            ob.resume();
+            flag=false;
+         return;   
+        }
        
         ob=new Thread(){
            public void run(){
@@ -164,6 +181,8 @@ public class stopwatch extends javax.swing.JFrame {
            
            
        }; 
+        
+        
        ob.start();
        
         
@@ -175,6 +194,15 @@ public class stopwatch extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_bResetActionPerformed
+
+    private void bPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPauseActionPerformed
+       
+            // TODO add your handling code here:    
+         ob.suspend();
+         flag=true;
+         //System.out.println(ob.getState());
+      
+    }//GEN-LAST:event_bPauseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,13 +240,13 @@ public class stopwatch extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bLap;
+    private javax.swing.JButton bPause;
     private javax.swing.JButton bReset;
     private javax.swing.JButton bStart;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> list;
     private javax.swing.JLabel timer;
     // End of variables declaration//GEN-END:variables
 }
